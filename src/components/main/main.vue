@@ -10,11 +10,12 @@
       <a-menu
         theme="dark"
         mode="inline"
-        :defaultSelectedKeys="['1']"
+        :defaultSelectedKeys="[currentRouter]"
         :inlineCollapsed="collapsed"
         :inlineIndent="24"
         @click="handleClick">
-        <a-menu-item key="1">
+
+        <a-menu-item key="home">
           <a-icon type="home" />
           <span>首页</span>
         </a-menu-item>
@@ -23,14 +24,14 @@
             <a-icon type="file-markdown" />
             <span>文章管理</span>
           </span>
-          <a-menu-item key="2" >编写文章</a-menu-item>
-          <a-menu-item key="3">文章列表</a-menu-item>
+          <a-menu-item key="WriteArticle" >编写文章</a-menu-item>
+          <a-menu-item key="articleList">文章列表</a-menu-item>
         </a-sub-menu>
-        <a-menu-item key="6">
+        <a-menu-item key="classify">
           <a-icon type="bars" />
           <span>分类管理</span>
         </a-menu-item>
-        <a-menu-item key="7">
+        <a-menu-item key="tag">
           <a-icon type="tags" />
           <span>标签列表</span>
           </a-menu-item>
@@ -39,8 +40,8 @@
             <a-icon type="user" />
             <span>信息管理</span>
             </span>
-          <a-menu-item key="10">个人信息</a-menu-item>
-          <a-menu-item key="11">邀请人列表</a-menu-item>
+          <a-menu-item key="userDetail">个人信息</a-menu-item>
+          <a-menu-item key="userList">邀请人列表</a-menu-item>
         </a-sub-menu>
       </a-menu>
     </a-layout-sider>
@@ -53,7 +54,7 @@
         />
       </a-layout-header>
       <a-layout-content :style="{ margin: '24px 16px', padding: '24px', background: '#fff', minHeight: '600px' }">
-        Content
+        <router-view/>
       </a-layout-content>
     </a-layout>
   </a-layout>
@@ -63,11 +64,25 @@ export default {
   data(){
     return {
       collapsed: false,
+      currentRouter:''
     }
+  },
+  // beforeRouteUpdate (to, from, next) {
+
+  //   let tempRoute = this.$route.path.split('/')
+  //   this.currentRouter = tempRoute[tempRoute.length - 1 ]
+  //   console.log(this.currentRouter)
+  //   next()
+  // },
+  created(){
+    let tempRoute = this.$route.path.split('/')
+    this.currentRouter = tempRoute[tempRoute.length - 1 ]
+    console.log(this.currentRouter)
   },
   methods: {
     handleClick(obj){
-      console.log(obj)
+      let routerPath = obj.key;
+      this.$router.push({ path: routerPath })
     },
     handleC(obj) {
       console.log(obj)
