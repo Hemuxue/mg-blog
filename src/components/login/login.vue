@@ -275,8 +275,8 @@ export default {
     right: 0;
     top: 0;
     bottom: 0;
-    background: url(https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1555517214818&di=9c61160f3d060c0da3f32e253db8d07c&imgtype=0&src=http%3A%2F%2Fimglf1.ph.126.net%2FwnxamrJ1qFeSPmpJjwmyTg%3D%3D%2F6599330362563626704.jpg)  no-repeat ;
-    background-size: cover;
+    background: url('../../common/image/login-bg.jpg')  no-repeat ;
+    background-size: 100% 100%;
     .box{
       background:#fff;
       padding: 30px 30px 10px 30px;

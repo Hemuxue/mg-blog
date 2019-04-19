@@ -1,10 +1,10 @@
 <template>
-  <a-layout id="components-layout-demo-custom-trigger">
+  <a-layout id="components-layout-demo-custom-trigger" :style="{dispaly:'flex',justifyContent:'flex-start'}">
     <a-layout-sider
       :trigger="null"
       collapsible
       v-model="collapsed"
-      style="background: rgb(50, 64, 87);width:256px;"
+      :style="{background: 'rgb(50, 64, 87)',width:'200px', overflow: 'auto', height: '100vh', position: 'fixed', left: 0 } "
     >
       <div class="logo"></div>
       <a-menu
@@ -45,15 +45,15 @@
         </a-sub-menu>
       </a-menu>
     </a-layout-sider>
-    <a-layout>
+    <a-layout :style="styleObj">
       <a-layout-header style="background: #fff; padding: 0">
         <a-icon
           class="trigger"
           :type="collapsed ? 'menu-unfold' : 'menu-fold'"
-          @click="()=> collapsed = !collapsed"
+          @click="tiggerCollapsed"
         />
       </a-layout-header>
-      <a-layout-content :style="{ margin: '24px 16px', padding: '24px', background: '#fff', minHeight: '600px' }">
+      <a-layout-content :style="{ margin: '24px 16px', padding: '24px', background: '#fff', minHeight: '600px'}">
         <router-view/>
       </a-layout-content>
     </a-layout>
@@ -64,7 +64,10 @@ export default {
   data(){
     return {
       collapsed: false,
-      currentRouter:''
+      currentRouter:'',
+      styleObj: {
+        marginLeft: '200px'
+      }
     }
   },
   // beforeRouteUpdate (to, from, next) {
@@ -86,6 +89,14 @@ export default {
     },
     handleC(obj) {
       console.log(obj)
+    },
+    tiggerCollapsed(){
+      this.collapsed = !this.collapsed
+      if(this.collapsed === true){
+        this.styleObj.marginLeft = '80px';
+      }else {
+        this.styleObj.marginLeft = '200px';
+      }
     }
   }
 }
