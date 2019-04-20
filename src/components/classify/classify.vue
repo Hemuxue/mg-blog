@@ -22,7 +22,14 @@
           <span >{{ scope.row.name }}</span>
         </template>
       </el-table-column>
-
+      <el-table-column
+        label="关联数量"
+        align="center"
+        >
+        <template slot-scope="scope">
+          <span >{{ scope.row.number }}</span>
+        </template>
+      </el-table-column>
       <el-table-column
         label="日期"
         align="center">
@@ -61,6 +68,7 @@ export default {
       tableData: [
         {
           name: '分类一',
+          number: 8,
           date: '2016-05-02',
         }, {
           name: '分类一',
