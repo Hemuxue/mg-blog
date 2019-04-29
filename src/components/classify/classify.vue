@@ -48,6 +48,17 @@
         </template>
       </el-table-column>
     </el-table>
+    <div class="pagination">
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="page"
+        :page-sizes="[5, 10, 20]"
+        :page-size="pageSize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total">
+      </el-pagination>
+    </div>
     <el-dialog title="新建分类" @close="handleClose"  :visible.sync="dialogFormVisible" width="500px">
       <el-form :model="form">
         <el-form-item label="分类名称" :label-width="formLabelWidth">
@@ -99,11 +110,13 @@ export default {
     indexMethod(index) {
       return index;
     },
-    handleCurrentChange(page){
+    handleCurrentChange(page) {
       this.page = page
+      this.getTags(page, this.pageSize);
     },
     handleSizeChange(pageSize){
       this.pageSize = pageSize
+      this.getTags(this.page, pageSize);
     },
     handleClose(){
       this.form.type = ''

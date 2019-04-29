@@ -2,7 +2,7 @@
   <div class="login">
     <div class="box" :class="{active: tabKey}">
       <h1 class="title">后台管理系统</h1>
-      <a-tabs defaultActiveKey="1" @change="callback" >
+      <a-tabs :defaultActiveKey="defaultKey" @change="callback" >
           <a-tab-pane tab="Login" key="1" forceRender>
             <a-form
             id="components-form-demo-normal-login"
@@ -214,12 +214,16 @@ export default {
           },
         },
       },
-      tabKey: false
+      tabKey: false,
+      defaultKey: '1'
     };
   },
   beforeCreate () {
     this.loginFrom = this.$form.createForm(this);
     this.Registerform = this.$form.createForm(this);
+  },
+  created() {
+    console.log(this.defaultKey)
   },
   methods: {
     loginSubmit (e) {
@@ -231,15 +235,13 @@ export default {
           Axios.post('/api/login',{
             password:values.Loginpassword,
             phone:values.phone,
-            remember: values.remember
           }).then( data => {
             console.log(data)
             if(data.data.code === 200) {
               if( data.data.status === 'success') {
                 this.$message.success('登录成功');
-                console.log(this)
-                this.$store.commit('addUserData',data.data.data)
-                // this.addUserData(data.data.data)
+                console.log(values.remember);
+                this.$store.commit('addUserData',data.data.data,values.remember)
                 setTimeout(() => {
                   this.$router.push({ path: 'main' })
                 }, 1000);
@@ -262,12 +264,18 @@ export default {
             phone: values.phone,
             password: values.password,
             email: values.email
+          }).then((data) => {
+            if(data.data.code === 200 && data.data.status === 'success') {
+              this.$message.success('注册成功');
+              setTimeout(() => {
+                  this.defaultKey = '2';
+              }, 1000);
+            }else {
+              this.$message.error('注册失败');
+            }
           })
         }
       });
-      // this.Registerform.setFieldsValue({
-      //   email:'12321321@qq.com'
-      // })
     },
     handleConfirmBlur  (e) {
       const value = e.target.value;

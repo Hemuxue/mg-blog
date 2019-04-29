@@ -13,7 +13,7 @@ import UserList from 'components/user/user_list.vue'
 
 Vue.use(Router)
 
-export default new Router({
+ const router =  new Router({
   routes: [
     {
       path:'/',
@@ -64,3 +64,22 @@ export default new Router({
     }
   ]
 })
+
+router.beforeEach((to, from, next) => {
+  console.log(localStorage.userData,sessionStorage.userData)
+  if(localStorage.userData || sessionStorage.userData) {
+    next();
+  } else {
+    if( to.path == '/login'){
+      next();
+    }else{
+      next('/login');
+    }
+  }
+
+})
+
+export default router;
+
+
+

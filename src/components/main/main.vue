@@ -53,7 +53,10 @@
             :type="collapsed ? 'menu-unfold' : 'menu-fold'"
             @click="tiggerCollapsed"
           />
-          <p class="user-name">{{userData.nick_name}}</p>
+          <p class="user-name">
+            <span>{{userData.nick_name}}</span>
+            <a-button class="user-button" @click.native="logOutClick" type="primary">退出登录</a-button>
+          </p>
         </a-layout-header>
         <a-layout-content :style="{ margin: '24px 16px', padding: '24px', background: '#fff', minHeight: '600px'}">
           <router-view/>
@@ -82,6 +85,7 @@ export default {
     let tempRoute = this.$route.path.split('/')
     this.currentRouter = tempRoute[tempRoute.length - 1 ]
     console.log(this.currentRouter)
+    console.log(this.userData);
   },
   methods: {
     handleClick(obj){
@@ -98,7 +102,11 @@ export default {
       }else {
         this.styleObj.marginLeft = '200px';
       }
-    }
+    },
+    logOutClick() {
+      this.$store.commit('deleteUserData')
+      this.$router.push({name: 'login'})
+    },
   }
 }
 </script>
@@ -132,6 +140,10 @@ export default {
     float: right;
     margin-right: 40px;
     font-weight: 600px;
+
+    .user-button {
+      margin-left: 15px;
+    }
   }
 }
 </style>

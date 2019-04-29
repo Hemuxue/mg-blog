@@ -17,7 +17,7 @@
         type="index"
         align="center"
         width="50"
-        :index="indexMethod">
+        :index="indexMethod(1)">
       </el-table-column>
       <el-table-column
         label="文章名称"

@@ -10,27 +10,28 @@
     </div>
     <el-table
       :stripe="true"
-      :data="tableData"
+      :data="userList"
       style="width: 100%">
       <el-table-column
         label='序号'
         type="index"
         align="center"
         width="50"
-        :index="indexMethod">
+        :index="indexMethod(1)">
       </el-table-column>
       <el-table-column
         label="用户名"
         width="180">
         <template slot-scope="scope">
-          <span style="margin-left: 10px">{{ scope.row.name }}</span>
+          <a-icon type="user" />
+          <span style="margin-left: 10px">{{ scope.row.nick_name }}</span>
         </template>
       </el-table-column>
       <el-table-column
         label="手机号码"
         width="180">
         <template slot-scope="scope">
-          <i class="el-icon-menu"></i>
+          <a-icon type="phone" />
           <span style="margin-left: 10px">{{ scope.row.phone }}</span>
         </template>
       </el-table-column>
@@ -38,7 +39,7 @@
         label="邮箱"
         width="180">
         <template slot-scope="scope">
-          <i class="el-icon-menu"></i>
+          <a-icon type="mail" />
           <span style="margin-left: 10px">{{ scope.row.email }}</span>
         </template>
       </el-table-column>
@@ -47,14 +48,11 @@
         width="180">
         <template slot-scope="scope">
           <i class="el-icon-time"></i>
-          <span style="margin-left: 10px">{{ scope.row.date }}</span>
+          <span style="margin-left: 10px">{{ scope.row.cTime }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button
-            size="mini"
-            @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
           <el-button
             size="mini"
             type="danger"
@@ -65,45 +63,47 @@
   </div>
 </template>
 <script>
+import Axios from 'axios'
+import { yearFromate } from 'common/js/util.js'
 export default {
   data() {
     return {
       search:'',
-      tableData: [
-        {
-          name: '深入理解js',
-          phone: '分类一',
-          email: '标签一',
-          date: '2016-05-02',
-        }, {
-          name: '深入理解js',
-          phone: '分类一',
-          email: '标签一',
-          date: '2016-05-02',
-        }, {
-          name: '深入理解js',
-          phone: '分类一',
-          email: '标签一',
-          date: '2016-05-02',
-        }, {
-          name: '深入理解js',
-          phone: '分类一',
-          email: '标签一',
-          date: '2016-05-02',
-        }
-      ]
+      userList: []
     }
+  },
+  created() {
+    this.getUser()
   },
   methods: {
     handleEdit(index, row) {
       console.log(index, row);
     },
     handleDelete(index, row) {
-      console.log(index, row);
+      Axios.post('/api/deleteUser', {
+        id: row.id
+      }).then(data => {
+        if(data.data.code === 200 && data.data.status === 'success') {
+          this.userList.splice(index,1);
+          this.$message.success('删除成功');
+        }
+      })
     },
     indexMethod(index) {
       return index;
     },
+    getUser() {
+      Axios.get('/api/getUser').then((data) =>{
+        console.log(data)
+        if(data.data.code === 200 && data.data.status ==='success') {
+          let data2 = data.data
+          data2.data.forEach( (item) => {
+            item.cTime = yearFromate(item.cTime)
+            this.userList.push(item);
+          })
+        }
+      })
+    }
   }
 }
 </script>
