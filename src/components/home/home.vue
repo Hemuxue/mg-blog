@@ -7,6 +7,7 @@
 </template>
 <script>
 let echarts = require('echarts');
+import Axios  from 'axios'
 export default {
   data() {
     return {
@@ -126,8 +127,17 @@ export default {
       this.surChart.setOption(this.surChartOption)
       this.statisChart.setOption(this.statisChartOption)
     })
-
+    this.getStatistics();
+  },
+  methods: {
+    getStatistics() {
+      const promise = Promise.all([Axios.get('/api/userCount'),Axios.get('/api/getUser')])
+      promise.then( (count) => {
+        console.log(count);
+      })
+    }
   }
+
 }
 </script>
 <style lang="less">

@@ -12,10 +12,10 @@
             <a-form-item>
               <a-input
                 v-decorator="[
-                  'userName',
-                  { rules: [{ required: true, message: 'Please input your username!' }] }
+                  'phone',
+                  { rules: [{ required: true, message: 'Please input your phone number!' }] }
                 ]"
-                placeholder="Username"
+                placeholder="phone"
               >
                 <a-icon
                   slot="prefix"
@@ -86,6 +86,23 @@
             </a-form-item>
             <a-form-item
               v-bind="formItemLayout"
+              label="Invitation code"
+            >
+              <a-input
+                v-decorator="[
+                  'InvitationCode',
+                  {
+                    rules: [ {
+                      required: true, message: 'Please input your E-mail!',
+                    },{
+                      validator: validateInvitationCode
+                    }]
+                  }
+                ]"
+              />
+            </a-form-item>
+            <a-form-item
+              v-bind="formItemLayout"
               label="Password"
             >
               <a-input
@@ -127,7 +144,7 @@
             >
               <a-input
                 v-decorator="[
-                  'nickname',
+                  'nick_name',
                   {
                     rules: [{ required: true, message: 'Please input your nickname!', whitespace: true }]
                   }
@@ -167,7 +184,9 @@
 </template>
 
 <script>
-
+import Axios from 'axios'
+import {mapState, mapMutations} from 'vuex'
+import editor from 'base/editor/editor';
 export default {
   data () {
     return {
@@ -199,7 +218,6 @@ export default {
     };
   },
   beforeCreate () {
-    console.log(this.$form)
     this.loginFrom = this.$form.createForm(this);
     this.Registerform = this.$form.createForm(this);
   },
@@ -209,6 +227,27 @@ export default {
       this.loginFrom.validateFields((err, values) => {
         if (!err) {
           console.log('Received values of form: ', values);
+          console.log(values);
+          Axios.post('/api/login',{
+            password:values.Loginpassword,
+            phone:values.phone,
+            remember: values.remember
+          }).then( data => {
+            console.log(data)
+            if(data.data.code === 200) {
+              if( data.data.status === 'success') {
+                this.$message.success('登录成功');
+                console.log(this)
+                this.$store.commit('addUserData',data.data.data)
+                // this.addUserData(data.data.data)
+                setTimeout(() => {
+                  this.$router.push({ path: 'main' })
+                }, 1000);
+              } else {
+                this.$message.error(data.data.msg);
+              }
+            }
+          })
         }
       });
     },
@@ -217,27 +256,36 @@ export default {
       console.log(this.Registerform)
       this.Registerform.validateFieldsAndScroll((err, values) => {
         if (!err) {
-          console.log('Received values of form: ', values);
+          console.log(values)
+          Axios.post('/api/register', {
+            nick_name: values.nick_name,
+            phone: values.phone,
+            password: values.password,
+            email: values.email
+          })
         }
       });
-      this.Registerform.setFieldsValue({
-        email:'12321321@qq.com'
-      })
+      // this.Registerform.setFieldsValue({
+      //   email:'12321321@qq.com'
+      // })
     },
     handleConfirmBlur  (e) {
-      console.log('触发')
-      console.log(e.target)
       const value = e.target.value;
-      console.log(value)
       this.confirmDirty = this.confirmDirty || !!value;
     },
     compareToFirstPassword  (rule, value, callback) {
-      console.log(rule, value, callback)
       const form = this.Registerform;
-      console.log(value,form.getFieldValue('password'))
       if (value && value !== form.getFieldValue('password')) {
         callback('Two passwords that you enter is inconsistent!');
       } else {
+        callback();
+      }
+    },
+    validateInvitationCode (rule ,value ,callback) {
+      const form  = this.Registerform;
+      if(value && value !== 'hechangjuzhenshuai') {
+        callback('邀请码错误，请输入正确邀请码');
+      }else {
         callback();
       }
     },
@@ -248,6 +296,7 @@ export default {
       }
       callback();
     },
+
     callback (key) {
       console.log(key)
       if(key == 2){
@@ -256,6 +305,8 @@ export default {
         this.tabKey = false
       }
     },
+    ...mapMutations(['addUserData'])
+
   },
 };
 </script>
