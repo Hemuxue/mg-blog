@@ -4,6 +4,7 @@
   </div>
 </template>
 <script>
+import {mapState, mapMutations} from 'vuex'
 import Editor from 'wangeditor'
 let editor;
 export default {
@@ -22,13 +23,16 @@ export default {
       contentText: this.content
     }
   },
+  computed:mapState([
+    'userData'
+  ]),
   watch:{
     contentText(){
       this.editor.txt.html(this.contentText)
     },
     isGetContent(data){
       console.log(data)
-      if(this.isGetContent){
+      if(data){
         this.getContent()
       }
 
@@ -36,20 +40,16 @@ export default {
   },
   created(){
     this.$nextTick( () =>{
+      let _this = this;
       editor = new Editor(this.$refs.editor)
-      editor.customConfig.uploadImgServer = '/upload'
+      editor.customConfig.uploadImgServer = '/api/upload'
       editor.customConfig.uploadImgHooks = {
-        before: function (xhr, editor, files) {
-            // 图片上传之前触发
-            // xhr 是 XMLHttpRequst 对象，editor 是编辑器对象，files 是选择的图片文件
-
-            // 如果返回的结果是 {prevent: true, msg: 'xxxx'} 则表示用户放弃上传
-            // return {
-            //     prevent: true,
-            //     msg: '放弃上传'
-            // }
-        },
         success: function (xhr, editor, result) {
+          console.log(xhr,editor, result)
+          const data = result.data
+          _this.appendContent(`
+            <img src="/api/getPic?path=${data.path}" alt="${data.name}"/>
+          `)
             // 图片上传并返回结果，图片插入成功之后触发
             // xhr 是 XMLHttpRequst 对象，editor 是编辑器对象，result 是服务器端返回的结果
         },
@@ -85,8 +85,12 @@ export default {
   },
   methods: {
     getContent(){
+      console.log('inter')
       this.$emit('getContent',editor.txt.html())
       console.log(editor.txt.html())
+    },
+    appendContent(html) {
+      editor.txt.append(html)
     }
   }
 }
@@ -97,5 +101,9 @@ export default {
   }
   .w-e-text-container{
     z-index: 100!important;
+    height: auto!important;
+    max-height: 600px!important;
+    min-height: 400px!important;
+    overflow-y: auto;
   }
 </style>

@@ -223,24 +223,19 @@ export default {
     this.Registerform = this.$form.createForm(this);
   },
   created() {
-    console.log(this.defaultKey)
   },
   methods: {
     loginSubmit (e) {
       e.preventDefault();
       this.loginFrom.validateFields((err, values) => {
         if (!err) {
-          console.log('Received values of form: ', values);
-          console.log(values);
           Axios.post('/api/login',{
             password:values.Loginpassword,
             phone:values.phone,
           }).then( data => {
-            console.log(data)
             if(data.data.code === 200) {
               if( data.data.status === 'success') {
                 this.$message.success('登录成功');
-                console.log(values.remember);
                 this.$store.commit('addUserData',data.data.data,values.remember)
                 setTimeout(() => {
                   this.$router.push({ path: 'main' })
@@ -255,10 +250,8 @@ export default {
     },
     RegisterSubmit  (e) {
       e.preventDefault();
-      console.log(this.Registerform)
       this.Registerform.validateFieldsAndScroll((err, values) => {
         if (!err) {
-          console.log(values)
           Axios.post('/api/register', {
             nick_name: values.nick_name,
             phone: values.phone,
@@ -306,7 +299,6 @@ export default {
     },
 
     callback (key) {
-      console.log(key)
       if(key == 2){
         this.tabKey = true
       }else {

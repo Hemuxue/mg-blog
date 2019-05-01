@@ -60,6 +60,7 @@
         </template>
       </el-table-column>
     </el-table>
+    <img src="/api/getUser" alt="">
   </div>
 </template>
 <script>

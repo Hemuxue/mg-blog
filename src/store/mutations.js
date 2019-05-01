@@ -3,6 +3,7 @@
 let mutations =  {
   addUserData(state, data,flag) {
     if( (typeof data) === 'object') {
+      state.userData = {}
       for (const props in data) {
         state.userData[props] = data[props];
       }

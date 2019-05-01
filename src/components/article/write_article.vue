@@ -2,85 +2,133 @@
   <div class="write-article">
     <div class="form">
       <el-form :model="articleForm" :rules="rules" ref="articleForm" label-width="100px" class="demo-articleForm">
-        <el-form-item label="活动名称" prop="name" style="maxWidth:300px">
+        <el-form-item label="文章名称" prop="name" style="maxWidth:300px">
           <el-input v-model="articleForm.name"></el-input>
         </el-form-item>
-        <el-form-item label="文章分类" prop="classify">
-          <el-select v-model="articleForm.classify" placeholder="请选择文章分类">
-            <el-option label="分类一" value="分类一"></el-option>
-            <el-option label="分类二" value="分类二"></el-option>
+        <el-form-item label="文章分类" prop="type">
+          <el-select v-model="articleForm.type" placeholder="请选择文章分类">
+            <el-option v-for="item of typeList" :key="item.type" :label="item.type" :value="item.type"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="文章分类" prop="type">
-          <el-select v-model="articleForm.type" placeholder="请选择文章标签">
-            <el-option label="标签一"   value="标签一"></el-option>
-            <el-option label="标签二"  value="标签二"></el-option>
+        <el-form-item label="文章标签" prop="tag">
+          <el-select v-model="articleForm.tag" placeholder="请选择文章标签">
+            <el-option v-for="item of tagList" :key="item.tag" :label="item.tag" :value="item.tag"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="文章编辑" prop="write">
           <editor
             @getContent="getContent"
-            :isGetContent="isGetContent">
+            :isGetContent="isGetContent"
+            class="editor">
           </editor>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="submitForm(articleForm)">立即创建</el-button>
+          <el-button tags="primary" @click="submitForm(articleForm)">立即创建</el-button>
         </el-form-item>
       </el-form>
     </div>
   </div>
 </template>
 <script>
+import Axios from 'axios'
 import editor from 'base/editor/editor'
 export default {
   components:{
-    editor
+    editor,
   },
   data(){
     return {
-      text:'',
       //当要回去编辑器的值的时候，改为true
       isGetContent: false,
       articleForm: {
         name: '',
-        classify: '',
         type: '',
+        tag: '',
       },
       rules: {
         name: [
           { required: true, message: '请输入文章标题', trigger: 'blur' },
         ],
-        classify: [
+        type: [
           { required: true, message: '请选择文章分类', trigger: 'change' }
         ],
-        type: [
+        tag: [
           { required: true, message: '请选择文章标签', trigger: 'change' }
         ],
         write:[
           { required: true, message: '请填写文章内容', trigger: 'blur'}
         ]
 
-      }
+      },
+      tagList: [],
+      typeList: [],
+      submitData: {}
 
     }
   },
   beforeCreate () {
     this.form = this.$form.createForm(this);
   },
+  created() {
+    this.getData()
+  },
   methods: {
     getContent(data){
-      this.text = data
+      const content = data
+      console.log('inter')
+      const tag_id = this.tagList.filter(item => item.tag == this.submitData.tag)[0].id
+      const type_id = this.typeList.filter(item => item.type == this.submitData.type)[0].id
+      Axios.post('/api/createBlog', {
+        title:this.submitData.name,
+        type: this.submitData.type,
+        tag: this.submitData.tag,
+        content: content,
+        tag_id: tag_id,
+        type_id: type_id
+      }).then((data) => {
+        console.log(data)
+      })
     },
     submitForm(data){
-      console.log(data)
+      this.submitData = data;
       this.isGetContent = true
-      this.$on('getContent', (d) =>{
-        console.log(d)
+    },
+    getData() {
+      Axios.get('/api/getAllTags').then(data => {
+        this.tagList = [];
+        let temp = data.data;
+        if(temp.code === 200 && temp.status === 'success') {
+          temp.data.forEach( (item) => {
+            this.tagList.push({
+              id: item.id,
+              tag: item.tag
+            });
+          })
+        }
       })
-    }
+      Axios.get('/api/getAllType').then(data => {
+        this.typeList = [];
+        let temp = data.data;
+        if(temp.code === 200 && temp.status === 'success') {
+          temp.data.forEach( (item) => {
+            this.typeList.push({
+              id: item.id,
+              type: item.type
+            });
+          })
+        }
+      })
+    },
+
 
   },
 }
 </script>
 <style lang="less">
+.editor {
+  max-height: 800px;
+  img{
+    max-width: 100%;
+  }
+}
 </style>
