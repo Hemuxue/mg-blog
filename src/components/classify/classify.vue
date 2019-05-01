@@ -160,6 +160,11 @@ export default {
     .add{
       margin: 30px 20px;
     }
+
+    .pagination {
+      margin-top: 30px;
+      width: 100%;
+    }
   }
 </style>
 

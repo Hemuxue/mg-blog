@@ -148,6 +148,7 @@ export default {
     },
     handleSizeChange(pageSize){
       this.pageSize = pageSize
+      this.page = 1;
       this.getTags(this.page, pageSize);
     }
   }

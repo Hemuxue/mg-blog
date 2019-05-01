@@ -10,7 +10,7 @@
     </div>
     <el-table
       :stripe="true"
-      :data="tableData"
+      :data="blogList"
       style="width: 100%">
       <el-table-column
         label='序号'
@@ -24,7 +24,7 @@
         width="180">
         <template slot-scope="scope">
           <i class="el-icon-document"></i>
-          <span style="margin-left: 10px">{{ scope.row.name }}</span>
+          <span style="margin-left: 10px">{{ scope.row.title }}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -32,7 +32,7 @@
         width="180">
         <template slot-scope="scope">
           <i class="el-icon-menu"></i>
-          <span style="margin-left: 10px">{{ scope.row.classify }}</span>
+          <span style="margin-left: 10px">{{ scope.row.type }}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -48,14 +48,14 @@
         width="180">
         <template slot-scope="scope">
           <i class="el-icon-time"></i>
-          <span style="margin-left: 10px">{{ scope.row.date }}</span>
+          <span style="margin-left: 10px">{{ scope.row.ctime }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button
+          <!-- <el-button
             size="mini"
-            @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+            @click="handleEdit(scope.$index, scope.row)">编辑</el-button> -->
           <el-button
             size="mini"
             type="danger"
@@ -63,7 +63,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <div class="pagination">
+    <div class="pagination" >
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
@@ -77,58 +77,72 @@
   </div>
 </template>
 <script>
+import Axios from 'axios'
+import { yearFromate } from 'common/js/util.js'
 export default {
   data() {
     return {
       search:'',
-      total:30,
+      total:0,
       page:1,
       pageSize:10,
-      tableData: [
-        {
-          name: '深入理解js',
-          classify: '分类一',
-          tags: '标签一',
-          date: '2016-05-02',
-        }, {
-          name: '深入理解js',
-          classify: '分类一',
-          tags: '标签一',
-          date: '2016-05-02',
-        }, {
-          name: '深入理解js',
-          classify: '分类一',
-          tags: '标签一',
-          date: '2016-05-02',
-        }, {
-          name: '深入理解js',
-          classify: '分类一',
-          tags: '标签一',
-          date: '2016-05-02',
-        }
-      ]
+      blogList: []
     }
+  },
+  created() {
+    this.getBlog();
   },
   methods: {
     handleEdit(index, row) {
       console.log(index, row);
     },
     handleDelete(index, row) {
-      console.log(index, row);
+      Axios.get(`/api/deleteBlog?id=${row.id}`).then((data) => {
+        console.log(data);
+        if(data.data.code === 200 && data.data.status === 'success') {
+          this.$message.success('删除成功');
+          setTimeout(() => {
+            this.blogList.splice(index,1);
+          },500)
+        }
+      })
     },
     indexMethod(index) {
       return index;
     },
     handleCurrentChange(page){
       this.page = page
+      this.getBlog(page, this.pageSize)
     },
     handleSizeChange(pageSize){
       this.pageSize = pageSize
-    }
+      this.page = 1
+      this.getBlog('', this.pageSize)
+    },
+    getBlog(page = 1,pageSize = 10) {
+      Axios.get(`/api/getBlogList?page=${page}&pageSize=${pageSize}`).then(data => {
+        console.log(data);
+        this.blogList = [];
+        if(data.data.code === 200 && data.data.status === 'success'){
+          const temp = data.data.data;
+          this.total = temp.total
+          temp.data.forEach(item =>{
+            item.ctime = yearFromate(item.ctime)
+            this.blogList.push(item);
+          })
+          console.log(this.blogList);
+        }
+      })
+    },
   }
 }
 </script>
 <style lang="less">
-
+  .article-list{
+    .pagination {
+      margin-top: 30px;
+      width: 100%;
+    }
+  }
 </style>
 

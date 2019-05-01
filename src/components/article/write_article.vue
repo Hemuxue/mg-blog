@@ -87,9 +87,21 @@ export default {
         type_id: type_id
       }).then((data) => {
         console.log(data)
+        if(data.data.code === 200 && data.data.status === 'success') {
+          this.$message.success('创建成功');
+          setTimeout(() => {
+            this.$router.push({path: 'articleList'})
+          },1000)
+        }
+        console.log(data)
       })
     },
     submitForm(data){
+      if(data.name && data.type && data.tag) {
+      }else {
+        this.$message.error('请填写完整的数据');
+        return
+      }
       this.submitData = data;
       this.isGetContent = true
     },
