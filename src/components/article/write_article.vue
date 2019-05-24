@@ -75,7 +75,6 @@ export default {
   methods: {
     getContent(data){
       const content = data
-      console.log('inter')
       const tag_id = this.tagList.filter(item => item.tag == this.submitData.tag)[0].id
       const type_id = this.typeList.filter(item => item.type == this.submitData.type)[0].id
       Axios.post('/api/createBlog', {
@@ -86,14 +85,12 @@ export default {
         tag_id: tag_id,
         type_id: type_id
       }).then((data) => {
-        console.log(data)
         if(data.data.code === 200 && data.data.status === 'success') {
           this.$message.success('创建成功');
           setTimeout(() => {
             this.$router.push({path: 'articleList'})
           },1000)
         }
-        console.log(data)
       })
     },
     submitForm(data){

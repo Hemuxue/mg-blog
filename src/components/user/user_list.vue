@@ -78,7 +78,6 @@ export default {
   },
   methods: {
     handleEdit(index, row) {
-      console.log(index, row);
     },
     handleDelete(index, row) {
       Axios.post('/api/deleteUser', {
@@ -95,7 +94,6 @@ export default {
     },
     getUser() {
       Axios.get('/api/getUser').then((data) =>{
-        console.log(data)
         if(data.data.code === 200 && data.data.status ==='success') {
           let data2 = data.data
           data2.data.forEach( (item) => {

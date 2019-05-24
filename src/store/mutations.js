@@ -1,7 +1,7 @@
 
 
 let mutations =  {
-  addUserData(state, data,flag) {
+  addUserData(state, data) {
     if( (typeof data) === 'object') {
       state.userData = {}
       for (const props in data) {
@@ -10,11 +10,10 @@ let mutations =  {
     }else {
       state.userData = {}
     }
-    if(flag) {
+    if(data.remember) {
       try {
         localStorage.userData = JSON.stringify(state.userData)
       } catch (e) {
-        console.log(e)
       }
     }else {
       sessionStorage.userData = JSON.stringify(state.userData)

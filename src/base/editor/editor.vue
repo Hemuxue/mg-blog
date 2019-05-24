@@ -31,7 +31,6 @@ export default {
       this.editor.txt.html(this.contentText)
     },
     isGetContent(data){
-      console.log(data)
       if(data){
         this.getContent()
       }
@@ -45,7 +44,6 @@ export default {
       editor.customConfig.uploadImgServer = '/api/upload'
       editor.customConfig.uploadImgHooks = {
         success: function (xhr, editor, result) {
-          console.log(xhr,editor, result)
           const data = result.data
           _this.appendContent(`
             <img src="/api/getPic?path=${data.path}" alt="${data.name}"/>
@@ -54,7 +52,6 @@ export default {
             // xhr 是 XMLHttpRequst 对象，editor 是编辑器对象，result 是服务器端返回的结果
         },
         fail: function (xhr, editor, result) {
-          console.log(xhr,editor,result)
             // 图片上传并返回结果，但图片插入错误时触发
             // xhr 是 XMLHttpRequst 对象，editor 是编辑器对象，result 是服务器端返回的结果
         },
@@ -85,9 +82,7 @@ export default {
   },
   methods: {
     getContent(){
-      console.log('inter')
       this.$emit('getContent',editor.txt.html())
-      console.log(editor.txt.html())
     },
     appendContent(html) {
       editor.txt.append(html)

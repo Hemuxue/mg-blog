@@ -66,7 +66,6 @@ Vue.use(Router)
 })
 
 router.beforeEach((to, from, next) => {
-  console.log(localStorage.userData,sessionStorage.userData)
   if(localStorage.userData || sessionStorage.userData) {
     next();
   } else {
@@ -76,7 +75,6 @@ router.beforeEach((to, from, next) => {
       next('/login');
     }
   }
-
 })
 
 export default router;

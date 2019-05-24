@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import {mapState, mapMutations} from 'vuex'
 export default {
   name: 'App',
   data(){
@@ -12,6 +13,16 @@ export default {
       collapsed: false,
     }
   },
+  created(){
+    const storage = localStorage.userData ? localStorage.userData : sessionStorage.userData;
+    this.$store.commit('addUserData',JSON.parse(storage))
+  },
+  computed:mapState([
+    'userData'
+  ]),
+  methods: {
+    ...mapMutations(['addUserData'])
+  }
 }
 </script>
 

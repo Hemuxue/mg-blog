@@ -1,6 +1,5 @@
 <template>
   <div class="user">
-    user
     <div class="user-box">
       <a-form :form="Registerform" @submit="RegisterSubmit">
         <a-form-item v-bind="formItemLayout" label="E-mail">
@@ -48,29 +47,10 @@
               {
                 rules: [{
                   required: true, message: 'Please input your password!',
-                }, {
-                  validator: validateToNextPassword,
                 }],
               }
             ]"
             type="password"
-            :disabled="disableFlag"
-          />
-        </a-form-item>
-        <a-form-item v-bind="formItemLayout" label="Confirm Password">
-          <a-input
-            v-decorator="[
-              'confirm',
-              {
-                rules: [{
-                  required: true, message: 'Please confirm your password!',
-                }, {
-                  validator: compareToFirstPassword,
-                }],
-              }
-            ]"
-            type="password"
-            @blur="handleConfirmBlur"
             :disabled="disableFlag"
           />
         </a-form-item>
@@ -130,7 +110,6 @@ export default {
       e.preventDefault();
       this.Registerform.validateFieldsAndScroll((err, values) => {
         if (!err) {
-          console.log(values)
           Axios.post('/api/updateUser', {
             nick_name: values.nick_name,
             phone: values.phone,
@@ -162,21 +141,6 @@ export default {
     handleConfirmBlur(e) {
       const value = e.target.value;
       this.confirmDirty = this.confirmDirty || !!value;
-    },
-    compareToFirstPassword(rule, value, callback) {
-      const form = this.Registerform;
-      if (value && value !== form.getFieldValue("password")) {
-        callback("Two passwords that you enter is inconsistent!");
-      } else {
-        callback();
-      }
-    },
-    validateToNextPassword(rule, value, callback) {
-      const form = this.Registerform;
-      if (value && this.confirmDirty) {
-        form.validateFields(["confirm"], { force: true });
-      }
-      callback();
     },
     callback(key) {
       if (key == 2) {

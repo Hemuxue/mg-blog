@@ -93,12 +93,13 @@
                   'InvitationCode',
                   {
                     rules: [ {
-                      required: true, message: 'Please input your E-mail!',
+                      required: true, message: 'Please input your invitation code',
                     },{
                       validator: validateInvitationCode
                     }]
                   }
                 ]"
+                type="password"
               />
             </a-form-item>
             <a-form-item
@@ -159,7 +160,11 @@
                 v-decorator="[
                   'phone',
                   {
-                    rules: [{ required: true, message: 'Please input your phone number!' }],
+                    rules: [{
+                      required: true, message: 'Please input your phone number!'
+                      },{
+                      validator: checkPhoneNumber,
+                    }],
                   }
                 ]"
                 style="width: 100%"
@@ -236,7 +241,8 @@ export default {
             if(data.data.code === 200) {
               if( data.data.status === 'success') {
                 this.$message.success('登录成功');
-                this.$store.commit('addUserData',data.data.data,values.remember)
+                data.data.data.remember = values.remember;
+                this.$store.commit('addUserData',data.data.data)
                 setTimeout(() => {
                   this.$router.push({ path: 'main' })
                 }, 1000);
@@ -261,7 +267,7 @@ export default {
             if(data.data.code === 200 && data.data.status === 'success') {
               this.$message.success('注册成功');
               setTimeout(() => {
-                  this.defaultKey = '2';
+                  this.defaultKey = '1';
               }, 1000);
             }else {
               this.$message.error('注册失败');
@@ -279,6 +285,17 @@ export default {
       if (value && value !== form.getFieldValue('password')) {
         callback('Two passwords that you enter is inconsistent!');
       } else {
+        callback();
+      }
+    },
+    checkPhoneNumber (rule, value, callback) {
+      const form = this.Registerform;
+      const reg = /^[1][3,4,5,7,8][0-9]{9}$/;
+      if(!form.getFieldValue('phone')) {
+        callback();
+      }else if( !reg.test(form.getFieldValue('phone')) ){
+        callback('The input is not valid phone');
+      }else {
         callback();
       }
     },

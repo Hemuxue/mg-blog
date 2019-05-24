@@ -94,11 +94,9 @@ export default {
   },
   methods: {
     handleEdit(index, row) {
-      console.log(index, row);
     },
     handleDelete(index, row) {
       Axios.get(`/api/deleteBlog?id=${row.id}`).then((data) => {
-        console.log(data);
         if(data.data.code === 200 && data.data.status === 'success') {
           this.$message.success('删除成功');
           setTimeout(() => {
@@ -121,7 +119,6 @@ export default {
     },
     getBlog(page = 1,pageSize = 10) {
       Axios.get(`/api/getBlogList?page=${page}&pageSize=${pageSize}`).then(data => {
-        console.log(data);
         this.blogList = [];
         if(data.data.code === 200 && data.data.status === 'success'){
           const temp = data.data.data;
@@ -130,7 +127,6 @@ export default {
             item.ctime = yearFromate(item.ctime)
             this.blogList.push(item);
           })
-          console.log(this.blogList);
         }
       })
     },

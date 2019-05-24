@@ -84,8 +84,6 @@ export default {
   created(){
     let tempRoute = this.$route.path.split('/')
     this.currentRouter = tempRoute[tempRoute.length - 1 ]
-    console.log(this.currentRouter)
-    console.log(this.userData);
   },
   methods: {
     handleClick(obj){
@@ -93,7 +91,6 @@ export default {
       this.$router.push({ path: routerPath })
     },
     handleC(obj) {
-      console.log(obj)
     },
     tiggerCollapsed(){
       this.collapsed = !this.collapsed
