@@ -1,7 +1,7 @@
 <template>
   <div class="login">
     <div class="box" :class="{active: tabKey}">
-      <h1 class="title">后台管理系统</h1>
+      <h1 class="title">BK Management SYS</h1>
       <a-tabs :defaultActiveKey="defaultKey" @change="callback" >
           <a-tab-pane tab="Login" key="1" forceRender>
             <a-form

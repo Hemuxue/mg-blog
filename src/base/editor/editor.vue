@@ -91,14 +91,20 @@ export default {
 }
 </script>
 <style lang="less">
-  .w-e-menu {
-    z-index: 101!important;
+  #editor-wrapper {
+    .editer {
+      height: 200px;
+    }
+    .w-e-menu {
+      z-index: 101!important;
+    }
+    .w-e-text-container{
+      z-index: 100!important;
+      height: 400px!important;
+      max-height: 600px!important;
+      min-height: 400px!important;
+      overflow-y: auto;
+    }
   }
-  .w-e-text-container{
-    z-index: 100!important;
-    height: auto!important;
-    max-height: 600px!important;
-    min-height: 400px!important;
-    overflow-y: auto;
-  }
+
 </style>
